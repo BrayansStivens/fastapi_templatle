@@ -1,0 +1,117 @@
+<p align="center">
+    <img src="https://python-poetry.org/images/logo-origami.svg" width="80" alt="Poetry Logo" style="display: inline-block; margin-right: 10px;"/>
+    <img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" width="350" alt="FastAPI Logo" style="display: inline-block; margin-left: 10px;"/>
+</p>
+
+# FAST API ARQUITECTURA HEXAGONAL TEMPLATE
+
+Bienvenido al template de **FAST API ARQUITECTURA HEXAGONAL**.
+
+## Requisitos Previos
+
+Para trabajar en este proyecto, necesitarás:
+
+- ![Python](https://img.shields.io/badge/Python-3.11.8-blue.svg)
+- [![Poetry](https://img.shields.io/badge/Poetry-Dependency%20Manager-blueviolet.svg)](https://python-poetry.org/docs/#installation)
+
+## Instalación
+
+Sigue los pasos a continuación para iniciar tu entorno de desarrollo:
+
+1. **Clonar el repositorio:**
+
+   ```bash
+   git clone https://github.com/BrayansStivens/fastapi_templatle.git
+   ```
+
+2. **Navegar a la carpeta del backend:**
+
+   ```bash
+   cd fastapi_templatle
+   ```
+
+3. **Instalar las dependencias con Poetry:**
+
+   ```bash
+   poetry install
+   ```
+
+4. **Activar el entorno virtual:**
+   ```bash
+   poetry shell
+   ```
+
+## Uso
+
+Para poner en marcha el servidor de desarrollo:
+
+1. **Iniciar FastAPI:**
+
+   ```bash
+   poetry run uvicorn app.main:app --reload
+   ```
+
+   El flag `--reload` permite que el servidor se reinicie automáticamente al realizar cambios en el código.
+
+## Testing
+
+Para ejecutar los tests del proyecto:
+
+1. **Correr pruebas:**
+   ```bash
+   poetry run pytest
+   ```
+
+---
+
+Para más información sobre cómo usar **FastAPI** y **Poetry**, visita la [documentación de FastAPI](https://fastapi.tiangolo.com/) y la [documentación de Poetry](https://python-poetry.org/docs/).
+
+## Arquitectura Hexagonal y Vertical Slicing
+
+La arquitectura hexagonal, también conocida como patrón de puertos y adaptadores, es un marco de diseño que promueve la separación entre la lógica de negocio de una aplicación y los mecanismos por los cuales esa lógica es accesible tanto desde fuera como desde dentro. La 'forma hexagonal' se deriva de la idea de que se pueden tener múltiples puntos de interacción (puertos) alrededor de la aplicación, a los cuales se conectan diversos adaptadores, sin afectar el núcleo central de la lógica de negocio.
+
+El vertical slicing, en el contexto de esta arquitectura, se refiere a la creación de características o módulos que atraviesan todas las capas necesarias, desde la interfaz de usuario o el punto de entrada hasta la persistencia de datos. Cada 'slice' representa una funcionalidad completa y es vertical en el sentido de que conecta todas las capas lógicas necesarias para completar una operación o proceso.
+
+
+## Estructura del Proyecto
+
+```bash
+my_fastapi_app/
+│
+├── app/                               # Carpeta principal de la aplicación
+│   ├── api/                           # Capa de adaptadores de entrada para la API
+│   │   ├── <feature>/                 # Módulo de una característica específica
+│   │   │   ├── application/           # Capa de aplicación con servicios y casos de uso
+│   │   │   ├── domain/                # Capa de dominio con entidades y reglas de negocio
+│   │   │   ├── infrastructure/        # Capa de infraestructura con detalles de implementación
+│   │   │   └── <feature>_controller.py# Controladores de FastAPI para las rutas de la característica
+│   │   └── main.py                    # Archivo principal de la API para incluir todas las rutas de los módulos
+│   │
+│   ├── core/                          # Configuración central y componentes compartidos de la aplicación
+│   │   ├── config.py                  # Configuración central de la aplicación
+│   │   └── security.py                # Utilidades de seguridad comunes
+│   │
+│   └── main.py                        # Punto de entrada principal de la aplicación FastAPI
+│
+├── tests/                             # Pruebas de la aplicación
+│   ├── api_tests/                     # Pruebas para los endpoints de la API
+│   │   ├── <feature>_tests/           # Pruebas específicas para una característica
+│   └── ...
+│
+├── requirements.txt                   # Dependencias del proyecto
+└── README.md                          # Documentación del proyecto
+```
+
+## Explicación de la Estructura
+
+- `api/`: Contiene módulos individuales y el archivo main.py. Cada módulo encapsula su propia lógica distribuida en capas de application, domain, e infrastructure.
+- `api/<feature_name>/`: Cada subdirectorio dentro de api/ corresponde a una característica específica, como auth para autenticación. Dentro de este módulo, se encuentran:
+  - `application/`: Contiene servicios que orquestan las operaciones de dominio y coordinan la lógica de negocio.
+  - `domain/`: Define las entidades y las reglas de negocio fundamentales de la característica.
+  - `infrastructure/`: Gestiona los detalles de implementación técnica, como la interacción con la base de datos.
+  - `api/<feature_name>_controller.py`: Actúa como adaptador de entrada, manejando las solicitudes HTTP y delegándolas a la capa de aplicación.
+- `api/main.py`: Agrega y configura las rutas de todos los módulos de la API, estableciendo sus prefijos y etiquetas.
+- `app/main.py`: Punto de entrada de la aplicación FastAPI que integra api_router y configura aspectos globales como middleware y CORS.
+- `core/`: Configuraciones y componentes compartidos que son fundamentales para la operación de la aplicación pero no están vinculados a una característica específica.
+
+Con esta estructura, la aplicación aprovecha una organización modular y clara. Esta disposición no solo facilita la escalabilidad y el mantenimiento, sino que también favorece prácticas de desarrollo como la integración y entrega continuas (CI/CD), permitiendo colaboraciones paralelas y eficientes entre equipos en diferentes características.
