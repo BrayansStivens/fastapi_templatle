@@ -21,13 +21,13 @@ Sigue los pasos a continuación para iniciar tu entorno de desarrollo:
 1. **Clonar el repositorio:**
 
    ```bash
-   git clone https://github.com/BrayansStivens/fastapi_templatle.git
+   git clone https://github.com/BrayansStivens/fastapi_template.git
    ```
 
 2. **Navegar a la carpeta del backend:**
 
    ```bash
-   cd fastapi_templatle
+   cd fastapi_template
    ```
 
 3. **Instalar las dependencias con Poetry:**
@@ -78,28 +78,55 @@ El vertical slicing, en el contexto de esta arquitectura, se refiere a la creaci
 ```bash
 my_fastapi_app/
 │
-├── app/                               # Carpeta principal de la aplicación
-│   ├── api/                           # Capa de adaptadores de entrada para la API
-│   │   ├── <feature>/                 # Módulo de una característica específica
-│   │   │   ├── application/           # Capa de aplicación con servicios y casos de uso
-│   │   │   ├── domain/                # Capa de dominio con entidades y reglas de negocio
-│   │   │   ├── infrastructure/        # Capa de infraestructura con detalles de implementación
-│   │   │   └── <feature>_controller.py# Controladores de FastAPI para las rutas de la característica
-│   │   └── main.py                    # Archivo principal de la API para incluir todas las rutas de los módulos
+├── app/                                 # Carpeta principal de la aplicación
+│   ├── api/                             # Capa de adaptadores de entrada para la API
+│   │   ├── common/                      # Funcionalidades comunes a todas las versiones
+│   │   │   ├── health/                  # Endpoints de chequeos de salud
+│   │   │   │   └── health_controller.py # Controladores para los endpoints de salud
+│   │   │   ├── dashboard/               # Endpoints del dashboard de administración
+│   │   │   │   └── dashboard_controller.py # Controladores para el dashboard
+│   │   │   └── main_common.py           # Punto de entrada para funcionalidades comunes (opcional)
+│   │   │
+│   │   ├── v1/                          # Versión 1 de la API
+│   │   │   ├── <feature>/               # Módulo de una característica específica
+│   │   │   │   ├── application/         # Capa de aplicación con servicios y casos de uso
+│   │   │   │   ├── domain/              # Capa de dominio con entidades y reglas de negocio
+│   │   │   │   ├── infrastructure/      # Capa de infraestructura con detalles de implementación
+│   │   │   │   └ <feature>_controller.py #Controladores de FastAPI para las rutas de la característica
+│   │   │   └── main_v1.py               # Punto de entrada de la versión 1 de la API
+│   │   │
+│   │   ├── v2/                          # Versión 2 de la API
+│   │   │   ├── <feature>/                   # Ejemplo de característica actualizada
+│   │   │   │   ├── application/
+│   │   │   │   ├── domain/
+│   │   │   │   ├── infrastructure/
+│   │   │   │   └── <feature>_controller.py
+│   │   │   └── main_v2.py               # Punto de entrada de la versión 2 de la API
+│   │   │
+│   │   └── main.py                      # Archivo principal que podría redirigir a versiones específicas
 │   │
-│   ├── core/                          # Configuración central y componentes compartidos de la aplicación
-│   │   ├── config.py                  # Configuración central de la aplicación
-│   │   └── security.py                # Utilidades de seguridad comunes
+│   ├── core/                            # Configuración central y componentes compartidos de la aplicación
+│   │   ├── config.py                    # Configuración central de la aplicación
+│   │   └── security.py                  # Utilidades de seguridad comunes
 │   │
-│   └── main.py                        # Punto de entrada principal de la aplicación FastAPI
+│   └── main.py                          # Punto de entrada general de la aplicación FastAPI
 │
-├── tests/                             # Pruebas de la aplicación
-│   ├── api_tests/                     # Pruebas para los endpoints de la API
-│   │   ├── <feature>_tests/           # Pruebas específicas para una característica
+├── tests/
+│   ├── api_tests/                       # Pruebas para los endpoints de la API
+│   │   ├── common/                      # Tests para funcionalidades comunes
+│   │   │   ├── health_tests/
+│   │   │   └── dashboard_tests/
+│   │   ├── v1/                          # Pruebas para la versión 1 de la API
+│   │   │   ├── <feature>_tests/         # Pruebas específicas para una característica
+│   │   │   └── ...
+│   │   ├── v2/                          # Pruebas para la versión 2 de la API
+│   │   │   ├── <feature>_tests/
+│   │   │   └── ...
+│   │   └── ...
 │   └── ...
 │
-├── requirements.txt                   # Dependencias del proyecto
-└── README.md                          # Documentación del proyecto
+├── requirements.txt                     # Dependencias del proyecto
+└── README.md                            # Documentación del proyecto
 ```
 
 ## Explicación de la Estructura
@@ -113,5 +140,8 @@ my_fastapi_app/
 - `api/main.py`: Agrega y configura las rutas de todos los módulos de la API, estableciendo sus prefijos y etiquetas.
 - `app/main.py`: Punto de entrada de la aplicación FastAPI que integra api_router y configura aspectos globales como middleware y CORS.
 - `core/`: Configuraciones y componentes compartidos que son fundamentales para la operación de la aplicación pero no están vinculados a una característica específica.
+- `core/config/`: Se utiliza para centralizar toda la configuración de la aplicación, facilita la gestión del comportamiento de la aplicacióne en diferentes entornos como (develop, testing y production). Incluyendo configuraciónes de bases de datos, claves secretas y parámetros de API externas.
+- `core/security/`: Gestionar y almacenar todos los utilitarios y configuraciones relacionadas con la seguridad de la aplicación.
+- `common/`: Incluyen las funcionalidades que son comunes y reutilizables independiente de la versión.
 
 Con esta estructura, la aplicación aprovecha una organización modular y clara. Esta disposición no solo facilita la escalabilidad y el mantenimiento, sino que también favorece prácticas de desarrollo como la integración y entrega continuas (CI/CD), permitiendo colaboraciones paralelas y eficientes entre equipos en diferentes características.
